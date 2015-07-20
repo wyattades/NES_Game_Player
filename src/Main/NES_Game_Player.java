@@ -1,6 +1,9 @@
+package Main;
+
+import Logic.Interpreter;
 
 /**
- * Directory: NES_Game_Player/PACKAGE_NAME/
+ * Directory: Main.NES_Game_Player/PACKAGE_NAME/
  * Created by Wyatt on 7/18/2015.
  */
 public class NES_Game_Player {

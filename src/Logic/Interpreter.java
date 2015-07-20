@@ -1,17 +1,23 @@
+package Logic;
+
+import ProgramIO.Input;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 
 /**
- * Directory: NES_Game_Player/PACKAGE_NAME/
+ * Directory: Main.NES_Game_Player/PACKAGE_NAME/
  * Created by Wyatt on 7/18/2015.
  */
 public class Interpreter implements Runnable {
@@ -23,7 +29,7 @@ public class Interpreter implements Runnable {
     private int x, y;
     private Rectangle dimension;
 
-    private Window window;
+    private UserIO.Window window;
 
     private Robot robot;
 
@@ -38,7 +44,7 @@ public class Interpreter implements Runnable {
     public void init() {
 
         //Create a display window
-        window = new Window(w,h);
+        window = new UserIO.Window(w,h);
 
         charReader = new CharReader(w,h);
 
@@ -76,8 +82,8 @@ public class Interpreter implements Runnable {
         for (int i = 0; i < screenShot.getWidth(); i++) {
             for (int j = 0; j < screenShot.getHeight(); j++) {
                 if (screenShot.getRGB(i, j) == NES_color_1 && screenShot.getRGB(i+1, j) == NES_color_2) {
-                    x = i-4;
-                    y = j+42;
+                    x = i - 4;
+                    y = j + 42;
                     foundWindow = true;
                     break outerLoop;
                 }
@@ -101,28 +107,49 @@ public class Interpreter implements Runnable {
 
             //Get an array of bytes from the NES game window
             Input input = new Input(robot);
-            byte[] byteArray = input.getArray(dimension);
+            int[] array = input.getArray(dimension);
 
-            IntBuffer intBuf = ByteBuffer.wrap(byteArray).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
-            int[] array = new int[intBuf.remaining()];
-            intBuf.get(array);
-            // ^ is this int[] thing even correct?
-            charReader.setGameArray(array);
-            System.out.println(charReader.getChar(25, 9, Color.white.getRGB()));
+            //Give the charReader the color array for reference
+            charReader.setGameArray(convertOneDimensionalToTwoDimensional(h,w,array));
 
             //TESTING
+            //Print out the char at the given location
+            System.out.println(charReader.getChar(24, 8, Color.white.getRGB()));
+
+            //System.exit(0);
+
+            //TESTING
+            //Create a new bufferedImage from the color array
+            BufferedImage result = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+            result.setRGB(0, 0, w, h, array, 0, w);
+
             //Display a new window that shows a copy of the NES game window
             Graphics2D g = (Graphics2D) window.bufferStrategy.getDrawGraphics();
-            InputStream in = new ByteArrayInputStream(byteArray);
-            BufferedImage result = null;
-            try {
-                result = ImageIO.read(in);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            g.drawImage(result,0,0,null);
+            g.drawImage(result, 0, 0, null);
+
+            g.drawImage(robot.createScreenCapture(new Rectangle(x + 24, y + 8, 8, 8)), 2, 2, null);
+
             window.bufferStrategy.show();
         }
 
     }
+
+    private int[][] convertOneDimensionalToTwoDimensional(int numberOfRows, int rowSize, int[] srcMatrix) {
+        int srcMatrixLength = srcMatrix.length;
+        int srcPosition = 0;
+
+        int[][] returnMatrix = new int[numberOfRows][];
+        for (int i = 0; i < numberOfRows; i++) {
+            int[] row = new int[rowSize];
+            int nextSrcPosition = srcPosition + rowSize;
+            if (srcMatrixLength >= nextSrcPosition) {
+                // Copy the data from the file if it has been written before. Otherwise we just keep row empty.
+                System.arraycopy(srcMatrix, srcPosition, row, 0, rowSize);
+            }
+            returnMatrix[i] = row;
+            srcPosition = nextSrcPosition;
+        }
+        return returnMatrix;
+    }
+
 }

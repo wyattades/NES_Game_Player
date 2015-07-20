@@ -1,9 +1,13 @@
+package ProgramIO;
+
+import Main.NES_Game_Player;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 /**
- * Directory: NES_Game_Player/PACKAGE_NAME/
+ * Directory: Main.NES_Game_Player/PACKAGE_NAME/
  * Created by Wyatt on 7/18/2015.
  */
 public class Output {
