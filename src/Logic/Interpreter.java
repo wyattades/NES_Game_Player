@@ -2,19 +2,10 @@ package Logic;
 
 import ProgramIO.Input;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
-import java.util.Arrays;
 
 /**
  * Directory: Main.NES_Game_Player/PACKAGE_NAME/
@@ -31,6 +22,8 @@ public class Interpreter implements Runnable {
 
     private UserIO.Window window;
 
+    private Input input;
+
     private Robot robot;
 
     private CharReader charReader;
@@ -43,6 +36,7 @@ public class Interpreter implements Runnable {
 
     public void init() {
 
+
         //Create a display window
         window = new UserIO.Window(w,h);
 
@@ -54,6 +48,8 @@ public class Interpreter implements Runnable {
         } catch (AWTException e) {
             e.printStackTrace();
         }
+
+        input = new Input(robot);
 
         running = true;
 
@@ -106,7 +102,6 @@ public class Interpreter implements Runnable {
         while(running) {
 
             //Get an array of bytes from the NES game window
-            Input input = new Input(robot);
             int[] array = input.getArray(dimension);
 
             //Give the charReader the color array for reference
@@ -127,11 +122,22 @@ public class Interpreter implements Runnable {
             Graphics2D g = (Graphics2D) window.bufferStrategy.getDrawGraphics();
             g.drawImage(result, 0, 0, null);
 
-            g.drawImage(robot.createScreenCapture(new Rectangle(x + 24, y + 8, 8, 8)), 2, 2, null);
+            //g.drawImage(robot.createScreenCapture(new Rectangle(x + 24, y + 8, 8, 8)), 2, 2, null);
+
+            g.drawImage(charReader.test1,0,0,null);
+            g.drawImage(charReader.test2,12,0,null);
+
 
             window.bufferStrategy.show();
+
         }
 
+    }
+
+    private int[][] getTwoDimensionalArray() {
+        int[][] result = new int[3][];
+
+        return result;
     }
 
     private int[][] convertOneDimensionalToTwoDimensional(int numberOfRows, int rowSize, int[] srcMatrix) {

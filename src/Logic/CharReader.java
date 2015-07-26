@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.util.Arrays;
 
 /**
@@ -38,9 +39,6 @@ public class CharReader {
 
     public CharReader(int w, int h) {
 
-//        this.width = w;
-//        this.height = h;
-
         //Import the char reference image
         BufferedImage image = null;
         try {
@@ -60,6 +58,8 @@ public class CharReader {
 
     }
 
+    BufferedImage test1,test2;
+
     public void setGameArray(int[][] gameArray) {
         this.gameArray = gameArray;
     }
@@ -69,12 +69,7 @@ public class CharReader {
         char c = '?';
 
         int[][] snapShotArray = subArray(gameArray,x,y,charSize,charSize);
-
-        for (int i = 0; i < 8; i++)
-            System.out.println(Arrays.toString(snapShotArray[i]));
-
-        //for (int i = 0; i < 8; i++)
-            System.out.println(Arrays.toString(charImageArray[0]));
+        int[][] charImageSubArray = subArray(charImageArray, 3 * charSize, 4 * charSize, charSize, charSize);
 
         for (int i = 1, row = 0; i < chars.length-1; i++) {
             int col = i % charSheetWidth;
@@ -87,29 +82,21 @@ public class CharReader {
 
         }
 
+        test1 = new BufferedImage(8,8,BufferedImage.TYPE_INT_RGB);
+        test2 = new BufferedImage(8,8,BufferedImage.TYPE_INT_RGB);
 
-//        outerLoop:
-//        for (int k = 0; k < charSheetWidth; k++) {
-//            for (int l = 0; l < charSheetHeight; l++) {
-//                if ((k != 0 && l != 0) && (k != charSheetWidth-1 && l != charSheetHeight-1)) {
-//                    boolean isChar = false;
-//                    for (int i = 0; i < charSize; i++) {
-//                        for (int j = 0; j < charSize; j++) {
-//                            int gA = gameArray[x + i][y + j];
-//                            int cIA = charImageArray[k * charSize + i][l * charSize + j];
-//                            //System.out.println(gA+" , "+cIA);
-//                            if ((gA == textColor && cIA == 1) || (gA != textColor && cIA != 1)) {
-//                                isChar = true;
-//                            }
-//                        }
-//                    }
-//                    if (isChar) {
-//                        c = chars[l * charSheetWidth + k];
-//                        break outerLoop;
-//                    }
-//                }
-//            }
-//        }
+
+
+        for (int i = 0; i < charSize; i ++) {
+            for (int j = 0; j < charSize; j ++) {
+                if (snapShotArray[i][j] == -1) test1.setRGB(i,j,-1);
+                if (charImageSubArray[i][j] == -1) test2.setRGB(i,j,-1);
+            }
+        }
+
+
+
+
         if (c == ' ') System.out.println("space");
         if (c == '?') System.out.println("Failed to locate matching char");
 
