@@ -66,7 +66,7 @@ public class CharReader {
 
     public char getChar(int x, int y, int textColor) {
 
-        char c = '?';
+        char c = 0;
 
         int[][] snapShotArray = subArray(gameArray,x,y,charSize,charSize);
         int[][] charImageSubArray = subArray(charImageArray, 3 * charSize, 4 * charSize, charSize, charSize);
@@ -82,23 +82,19 @@ public class CharReader {
 
         }
 
-        test1 = new BufferedImage(8,8,BufferedImage.TYPE_INT_RGB);
-        test2 = new BufferedImage(8,8,BufferedImage.TYPE_INT_RGB);
+//        test1 = new BufferedImage(8,8,BufferedImage.TYPE_INT_RGB);
+//        test2 = new BufferedImage(8,8,BufferedImage.TYPE_INT_RGB);
+//
+//        for (int i = 0; i < charSize; i ++) {
+//            for (int j = 0; j < charSize; j ++) {
+//                if (snapShotArray[i][j] == -1) test1.setRGB(i,j,-1);
+//                if (charImageSubArray[i][j] == -1) test2.setRGB(i,j,-1);
+//            }
+//        }
 
 
-
-        for (int i = 0; i < charSize; i ++) {
-            for (int j = 0; j < charSize; j ++) {
-                if (snapShotArray[i][j] == -1) test1.setRGB(i,j,-1);
-                if (charImageSubArray[i][j] == -1) test2.setRGB(i,j,-1);
-            }
-        }
-
-
-
-
-        if (c == ' ') System.out.println("space");
-        if (c == '?') System.out.println("Failed to locate matching char");
+//        if (c == ' ') System.out.println("space");
+//        if (c == 0) System.out.println("Failed to locate matching char");
 
         return c;
     }

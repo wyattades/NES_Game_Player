@@ -26,6 +26,7 @@ public class Window {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setUndecorated(false);
+        frame.setFocusableWindowState(false);
 
         frame.add(new JLabel("test", SwingConstants.CENTER), BorderLayout.CENTER);
         frame.validate();
@@ -36,7 +37,6 @@ public class Window {
         GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
         canvas.createBufferStrategy(2);
         bufferStrategy = canvas.getBufferStrategy();
-        //canvas.requestFocus();
     }
 
 }

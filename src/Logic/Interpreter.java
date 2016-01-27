@@ -15,8 +15,6 @@ public class Interpreter implements Runnable {
 
     private UserIO.Window window;
 
-    private Input input;
-
     private CharReader charReader;
 
     private ExecutableControl exeControl;
@@ -36,52 +34,14 @@ public class Interpreter implements Runnable {
 
         charReader = new CharReader(exeControl.w,exeControl.h);
 
-        input = new Input(robot);
-
         running = true;
 
-
-
-        //Clicks the NES game icon in order to bring it to the front
-        Point2D previousPos = MouseInfo.getPointerInfo().getLocation();
-        robot.mouseMove(1060, 1060);
-        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-        robot.mouseMove((int) previousPos.getX(), (int) previousPos.getY());
-        try {
-            Thread.sleep(500);
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-
-        //Take a screenshot of the entire screen
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        BufferedImage screenShot = robot.createScreenCapture(
-                new Rectangle(0,0,(int)screenSize.getWidth(),(int)screenSize.getHeight())
-        );
-
-        boolean foundWindow = false;
-
-        //Set x and y to the top left corner of the NES game
-        outerLoop:
-        for (int i = 0; i < screenShot.getWidth(); i++) {
-            for (int j = 0; j < screenShot.getHeight(); j++) {
-                if (screenShot.getRGB(i, j) == NES_color_1 && screenShot.getRGB(i+1, j) == NES_color_2) {
-                    x = i - 4;
-                    y = j + 42;
-                    foundWindow = true;
-                    break outerLoop;
-                }
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                exeControl.destroyExecutable();
             }
-        }
+        }));
 
-        //If unable to locate window, then exit
-        if (!foundWindow) {
-            System.out.println("Unable to locate the NES game window");
-            System.exit(0);
-        }
-
-        dimension = new Rectangle(x,y,w,h);
 
     }
 
@@ -91,21 +51,21 @@ public class Interpreter implements Runnable {
         while(running) {
 
             //Get an array of bytes from the NES game window
-            int[] array = input.getArray(dimension);
+            int[] array = exeControl.getArray(exeControl.dimension);
 
             //Give the charReader the color array for reference
-            charReader.setGameArray(convertOneDimensionalToTwoDimensional(h,w,array));
+            charReader.setGameArray(convertOneDimensionalToTwoDimensional(exeControl.h,exeControl.w,array));
 
             //TESTING
             //Print out the char at the given location
-            System.out.println("CHAR: " + charReader.getChar(24, 8, Color.white.getRGB()));
+            //System.out.println("CHAR: " + charReader.getChar(24, 8, Color.white.getRGB()));
 
             //System.exit(0);
 
             //TESTING
             //Create a new bufferedImage from the color array
-            BufferedImage result = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-            result.setRGB(0, 0, w, h, array, 0, w);
+            BufferedImage result = new BufferedImage(exeControl.w, exeControl.h, BufferedImage.TYPE_INT_RGB);
+            result.setRGB(0, 0, exeControl.w, exeControl.h, array, 0, exeControl.w);
 
             //Display a new window that shows a copy of the NES game window
             Graphics2D g = (Graphics2D) window.bufferStrategy.getDrawGraphics();
@@ -122,8 +82,6 @@ public class Interpreter implements Runnable {
         }
 
     }
-
-
 
     private int[][] getTwoDimensionalArray() {
         int[][] result = new int[3][];
