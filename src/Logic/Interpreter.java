@@ -1,6 +1,6 @@
 package Logic;
 
-import ProgramIO.Input;
+import ProgramIO.ExecutableControl;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
@@ -13,20 +13,13 @@ import java.awt.image.BufferedImage;
  */
 public class Interpreter implements Runnable {
 
-    private final int w = 256, h = 224;
-    private final int NES_color_1 = (new Color(63, 63, 0).getRGB());
-    private final int NES_color_2 = (new Color(127, 127, 0).getRGB());
-
-    private int x, y;
-    private Rectangle dimension;
-
     private UserIO.Window window;
 
     private Input input;
 
-    private Robot robot;
-
     private CharReader charReader;
+
+    private ExecutableControl exeControl;
 
     public boolean running;
 
@@ -36,22 +29,18 @@ public class Interpreter implements Runnable {
 
     public void init() {
 
+        exeControl = new ExecutableControl();
 
         //Create a display window
-        window = new UserIO.Window(w,h);
+        window = new UserIO.Window(exeControl.w,exeControl.h);
 
-        charReader = new CharReader(w,h);
-
-        robot = null;
-        try {
-            robot = new Robot();
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
+        charReader = new CharReader(exeControl.w,exeControl.h);
 
         input = new Input(robot);
 
         running = true;
+
+
 
         //Clicks the NES game icon in order to bring it to the front
         Point2D previousPos = MouseInfo.getPointerInfo().getLocation();
@@ -109,7 +98,7 @@ public class Interpreter implements Runnable {
 
             //TESTING
             //Print out the char at the given location
-            System.out.println(charReader.getChar(24, 8, Color.white.getRGB()));
+            System.out.println("CHAR: " + charReader.getChar(24, 8, Color.white.getRGB()));
 
             //System.exit(0);
 
@@ -133,6 +122,8 @@ public class Interpreter implements Runnable {
         }
 
     }
+
+
 
     private int[][] getTwoDimensionalArray() {
         int[][] result = new int[3][];
