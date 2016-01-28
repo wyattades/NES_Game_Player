@@ -15,13 +15,13 @@ import java.io.IOException;
  */
 public class ExecutableControl {
 
-    public final int w = 256, h = 224;
+    public final int w = 260, h = 250;
     private final int NES_color_1 = new Color(63, 63, 0).getRGB();
     private final int NES_color_2 = new Color(127, 127, 0).getRGB();
     private final String gameName = "supermario.nes";
     private final String exeName = "/NES/nes.exe";
 
-    private int x, y;
+    public int x, y;
     public Rectangle dimension;
     private Robot robot;
     private BufferedImage screenShot;
@@ -51,8 +51,13 @@ public class ExecutableControl {
 
         openMarioGame();
 
-        process.isAlive();
+    }
 
+    public void checkExeAvailable() {
+        if (!process.isAlive()) {
+            System.out.println("The executable has closed or is no longer available.");
+            System.exit(0);
+        }
     }
 
     private void sleep(int amount) {
@@ -130,7 +135,7 @@ public class ExecutableControl {
 
         //If unable to locate window, then exit
         if (!foundWindow) {
-            System.out.println("Unable to locate the NES game window");
+            System.out.println("Unable to locate the NES game window.");
             System.exit(0);
         }
     }

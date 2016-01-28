@@ -8,9 +8,10 @@ public class Window {
 
     public BufferStrategy bufferStrategy;
 
-    public Window(int w, int h) {
+    public Window(int x, int y, int w, int h) {
 
         JFrame frame = new JFrame("Test");
+        frame.setLocation(x,y);
         frame.setSize(260,250);
         JPanel panel = (JPanel) frame.getContentPane();
        // panel.setLayout(null);

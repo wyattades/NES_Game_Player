@@ -30,9 +30,9 @@ public class Interpreter implements Runnable {
         exeControl = new ExecutableControl();
 
         //Create a display window
-        window = new UserIO.Window(exeControl.w,exeControl.h);
+        window = new UserIO.Window(200,200,exeControl.w,exeControl.h);
 
-        charReader = new CharReader(exeControl.w,exeControl.h);
+        charReader = new CharReader(Color.white);
 
         running = true;
 
@@ -41,7 +41,6 @@ public class Interpreter implements Runnable {
                 exeControl.destroyExecutable();
             }
         }));
-
 
     }
 
@@ -54,15 +53,16 @@ public class Interpreter implements Runnable {
             int[] array = exeControl.getArray(exeControl.dimension);
 
             //Give the charReader the color array for reference
-            charReader.setGameArray(convertOneDimensionalToTwoDimensional(exeControl.h,exeControl.w,array));
+            charReader.setGameArray(convertOneDimensionalToTwoDimensional(exeControl.w,exeControl.h,array));
+
+            //Check if executable ever closes
+            exeControl.checkExeAvailable();
 
             //TESTING
+
             //Print out the char at the given location
-            //System.out.println("CHAR: " + charReader.getChar(24, 8, Color.white.getRGB()));
+            System.out.println("CHAR: " + charReader.getChar(24, 8));
 
-            //System.exit(0);
-
-            //TESTING
             //Create a new bufferedImage from the color array
             BufferedImage result = new BufferedImage(exeControl.w, exeControl.h, BufferedImage.TYPE_INT_RGB);
             result.setRGB(0, 0, exeControl.w, exeControl.h, array, 0, exeControl.w);
@@ -71,25 +71,14 @@ public class Interpreter implements Runnable {
             Graphics2D g = (Graphics2D) window.bufferStrategy.getDrawGraphics();
             g.drawImage(result, 0, 0, null);
 
-            //g.drawImage(robot.createScreenCapture(new Rectangle(x + 24, y + 8, 8, 8)), 2, 2, null);
-
-            g.drawImage(charReader.test1,0,0,null);
-            g.drawImage(charReader.test2,12,0,null);
-
-
             window.bufferStrategy.show();
 
         }
 
     }
 
-    private int[][] getTwoDimensionalArray() {
-        int[][] result = new int[3][];
 
-        return result;
-    }
-
-    private int[][] convertOneDimensionalToTwoDimensional(int numberOfRows, int rowSize, int[] srcMatrix) {
+    private static int[][] convertOneDimensionalToTwoDimensional(int rowSize, int numberOfRows, int[] srcMatrix) {
         int srcMatrixLength = srcMatrix.length;
         int srcPosition = 0;
 

@@ -14,17 +14,11 @@ import java.util.Arrays;
  */
 public class CharReader {
 
-    private int[][] charImageArray;
-
-    private int WHITE = -1;
-
-    private int[][] gameArray;
-
-    private final static int charSize = 8;
-
-    private final static int charSheetWidth = 16;
-    private final static int charSheetHeight = 6;
-
+    private final int
+            charSize = 8,
+            charSheetWidth = 16,
+            charSheetHeight = 6,
+            WHITE = -1;
     private final static char[] chars = {
             ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';' , '<', '=', '>', '?',
@@ -34,42 +28,59 @@ public class CharReader {
             'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{' , '|', '}', '~', ' '
     };
 
+    private int[][] gameArray;
+    private int[][] charImageArray;
+    private int textColor;
 
-    //private int width, height;
+    public CharReader(Color textColor) {
 
-    public CharReader(int w, int h) {
+        this.textColor = textColor.getRGB();
 
         //Import the char reference image
         BufferedImage image = null;
         try {
+            //TODO: Fix this file location String \/
             image = ImageIO.read(new File("out/production/NES_Game_Player/Data/neschars.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //Set a 0/1 array base on the char reference image
+        //Set a -1/0 array based on the char reference image
         charImageArray = new int[charSheetWidth*charSize][charSheetHeight*charSize];
-        for (int i = 0; i < charSheetWidth*charSize; i ++) {
-            for (int j = 0; j < charSheetHeight*charSize; j ++) {
-                if (image.getRGB(i, j) == WHITE)
+        for (int i = 0; i < charSheetWidth*charSize; i++) {
+            for (int j = 0; j < charSheetHeight*charSize; j++) {
+                if (image.getRGB(i,j) == WHITE)
                     charImageArray[i][j] = WHITE;
             }
         }
 
+        printArray(charImageArray);
+
     }
 
-    BufferedImage test1,test2;
+    //TEMP
+    public static void printArray(int[][] a) {
+        System.out.println();
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < a[0].length; j++) {
+                System.out.print(((a[i][j]==0)?" ":"#") + " ");
+            }
+            System.out.println();
+        }
+    }
 
     public void setGameArray(int[][] gameArray) {
         this.gameArray = gameArray;
     }
 
-    public char getChar(int x, int y, int textColor) {
+    public char getChar(int x, int y) {
 
         char c = 0;
 
         int[][] snapShotArray = subArray(gameArray,x,y,charSize,charSize);
-        int[][] charImageSubArray = subArray(charImageArray, 3 * charSize, 4 * charSize, charSize, charSize);
+        //int[][] charImageSubArray = subArray(charImageArray, 3 * charSize, 4 * charSize, charSize, charSize);
+
+//        printArray(gameArray);
+//        System.exit(0);
 
         for (int i = 1, row = 0; i < chars.length-1; i++) {
             int col = i % charSheetWidth;
@@ -110,7 +121,7 @@ public class CharReader {
 
             //Set the array to only hold 0 and 1
             for (int k = 0; k < w; k++) {
-                if (result[j][k] != -1) result[j][k] = 0;
+               // if (result[j][k] != textColor) result[j][k] = 0;
             }
         }
 
