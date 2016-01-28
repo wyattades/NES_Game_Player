@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.util.Arrays;
 
 /**
@@ -31,6 +30,9 @@ public class CharReader {
     private int[][] gameArray;
     private int[][] charImageArray;
     private int textColor;
+
+    //TEMP
+    public BufferedImage snapShotTest, charImageTest;
 
     public CharReader(Color textColor) {
 
@@ -77,7 +79,7 @@ public class CharReader {
         char c = 0;
 
         int[][] snapShotArray = subArray(gameArray,x,y,charSize,charSize);
-        //int[][] charImageSubArray = subArray(charImageArray, 3 * charSize, 4 * charSize, charSize, charSize);
+        int[][] charImageSubArray = subArray(charImageArray, 3 * charSize, 4 * charSize, charSize, charSize);
 
 //        printArray(gameArray);
 //        System.exit(0);
@@ -93,15 +95,15 @@ public class CharReader {
 
         }
 
-//        test1 = new BufferedImage(8,8,BufferedImage.TYPE_INT_RGB);
-//        test2 = new BufferedImage(8,8,BufferedImage.TYPE_INT_RGB);
-//
-//        for (int i = 0; i < charSize; i ++) {
-//            for (int j = 0; j < charSize; j ++) {
-//                if (snapShotArray[i][j] == -1) test1.setRGB(i,j,-1);
-//                if (charImageSubArray[i][j] == -1) test2.setRGB(i,j,-1);
-//            }
-//        }
+        snapShotTest = new BufferedImage(charSize,charSize,BufferedImage.TYPE_INT_RGB);
+        charImageTest = new BufferedImage(charSize,charSize,BufferedImage.TYPE_INT_RGB);
+
+        for (int i = 0; i < charSize; i++) {
+            for (int j = 0; j < charSize; j++) {
+                if (snapShotArray[i][j] == WHITE) snapShotTest.setRGB(i,j,-1);
+                //if (charImageSubArray[i][j] == WHITE) charImageTest.setRGB(i,j,-1);
+            }
+        }
 
 
 //        if (c == ' ') System.out.println("space");

@@ -24,4 +24,12 @@ public class NES_Game_Player {
         return (int) millisLong;
     }
 
+    public static void sleep(int amount) {
+        try {
+            Thread.sleep(amount);
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
 }

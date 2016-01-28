@@ -3,8 +3,6 @@ package Logic;
 import ProgramIO.ExecutableControl;
 
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 /**
@@ -70,6 +68,10 @@ public class Interpreter implements Runnable {
             //Display a new window that shows a copy of the NES game window
             Graphics2D g = (Graphics2D) window.bufferStrategy.getDrawGraphics();
             g.drawImage(result, 0, 0, null);
+
+            //TEMP
+            g.drawImage(charReader.snapShotTest,0,0,null);
+            //g.drawImage(charReader.charImageTest,8,0,null);
 
             window.bufferStrategy.show();
 

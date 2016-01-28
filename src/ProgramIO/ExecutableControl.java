@@ -1,5 +1,7 @@
 package ProgramIO;
 
+import Main.NES_Game_Player;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
@@ -28,6 +30,8 @@ public class ExecutableControl {
     private Process process;
 
     public ExecutableControl() {
+
+        //Initiate robot
         try {
             robot = new Robot();
         } catch (AWTException e) {
@@ -35,21 +39,12 @@ public class ExecutableControl {
         }
 
         openExecutable();
-
-//        //Clicks the NES game icon in order to bring it to the front
-//        Point2D previousPos = MouseInfo.getPointerInfo().getLocation();
-//        robot.mouseMove(1060, 1060);
-//        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-//        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-//        robot.mouseMove((int) previousPos.getX(), (int) previousPos.getY());
-
-        sleep(500);
-
+        //Wait a bit for exe to fully open
+        NES_Game_Player.sleep(500);
+        openMarioGame();
         locateWindow();
 
         dimension = new Rectangle(x,y,w,h);
-
-        openMarioGame();
 
     }
 
@@ -57,14 +52,6 @@ public class ExecutableControl {
         if (!process.isAlive()) {
             System.out.println("The executable has closed or is no longer available.");
             System.exit(0);
-        }
-    }
-
-    private void sleep(int amount) {
-        try {
-            Thread.sleep(amount);
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
         }
     }
 
@@ -99,7 +86,7 @@ public class ExecutableControl {
         robot.keyRelease(KeyEvent.VK_CONTROL);
         robot.keyRelease(KeyEvent.VK_O);
 
-        sleep(300);
+        NES_Game_Player.sleep(300);
 
         String[] chars = gameName.split("(?!^)");
         for (String s: chars) {
