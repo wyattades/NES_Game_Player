@@ -4,6 +4,7 @@ import ProgramIO.ExecutableControl;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 /**
  * Directory: Main.NES_Game_Player/PACKAGE_NAME/
@@ -50,8 +51,18 @@ public class Interpreter implements Runnable {
             //Get an array of bytes from the NES game window
             int[] array = exeControl.getArray(exeControl.dimension);
 
+//            for (int j = 0; j < array.length; j+=exeControl.w) {
+//                int[] t = Arrays.copyOfRange(array, j, j+exeControl.w);
+//                for(int p : t) {
+//                    System.out.print((p==-1)?'#':' ');
+//                }
+//                System.out.println();
+//            }
+//            System.exit(1);
+
             //Give the charReader the color array for reference
-            charReader.setGameArray(convertOneDimensionalToTwoDimensional(exeControl.w,exeControl.h,array));
+//            charReader.setGameArray(convertOneDimensionalToTwoDimensional(exeControl.w,exeControl.h,array));
+            charReader.setGameArray(array);
 
             //Check if executable ever closes
             exeControl.checkExeAvailable();
@@ -59,7 +70,15 @@ public class Interpreter implements Runnable {
             //TESTING
 
             //Print out the char at the given location
-            System.out.println("CHAR: " + charReader.getChar(24, 8));
+//            for (int i = 0; i < exeControl.h-8; i++){
+//                for (int j = 0; j < exeControl.w-8; j ++) {
+//                    char c = charReader.getChar(i,j);
+//                    if (c != 0) {
+//                        System.out.println("CHAR: " + c + " at: "+i+","+j);
+//                    }
+//                }
+//            }
+//            System.exit(1);
 
             //Create a new bufferedImage from the color array
             BufferedImage result = new BufferedImage(exeControl.w, exeControl.h, BufferedImage.TYPE_INT_RGB);
@@ -70,7 +89,7 @@ public class Interpreter implements Runnable {
             g.drawImage(result, 0, 0, null);
 
             //TEMP
-            g.drawImage(charReader.snapShotTest,0,0,null);
+            //g.drawImage(charReader.snapShotTest,0,0,null);
             //g.drawImage(charReader.charImageTest,8,0,null);
 
             window.bufferStrategy.show();

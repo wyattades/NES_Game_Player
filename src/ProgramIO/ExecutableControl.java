@@ -2,6 +2,7 @@ package ProgramIO;
 
 import Main.NES_Game_Player;
 
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
@@ -17,7 +18,7 @@ import java.io.IOException;
  */
 public class ExecutableControl {
 
-    public final int w = 260, h = 250;
+    public final static int w = 260, h = 250;
     private final int NES_color_1 = new Color(63, 63, 0).getRGB();
     private final int NES_color_2 = new Color(127, 127, 0).getRGB();
     private final String gameName = "supermario.nes";
@@ -42,6 +43,7 @@ public class ExecutableControl {
         //Wait a bit for exe to fully open
         NES_Game_Player.sleep(500);
         openMarioGame();
+        NES_Game_Player.sleep(500);
         locateWindow();
 
         dimension = new Rectangle(x,y,w,h);
@@ -75,7 +77,6 @@ public class ExecutableControl {
         System.out.println("Shutting down executable: " + exeName);
 
         process.destroy();
-
     }
 
     private void openMarioGame() {
@@ -86,7 +87,7 @@ public class ExecutableControl {
         robot.keyRelease(KeyEvent.VK_CONTROL);
         robot.keyRelease(KeyEvent.VK_O);
 
-        NES_Game_Player.sleep(300);
+        NES_Game_Player.sleep(500);
 
         String[] chars = gameName.split("(?!^)");
         for (String s: chars) {
