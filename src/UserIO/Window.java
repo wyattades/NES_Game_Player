@@ -12,26 +12,24 @@ public class Window {
 
         JFrame frame = new JFrame("Test");
         frame.setLocation(x,y);
-        frame.setSize(260,250);
-        JPanel panel = (JPanel) frame.getContentPane();
-       // panel.setLayout(null);
-        panel.setLayout(null);
-        panel.setSize(new Dimension(w, h));
+        frame.setSize(w,h);
+
 
         Canvas canvas = new Canvas();
         canvas.setBounds(0, 0, w, h);
         canvas.setIgnoreRepaint(true);
+
+        JPanel panel = (JPanel) frame.getContentPane();
+        panel.setLayout(null);
+        panel.setSize(new Dimension(w, h));
         panel.add(canvas);
 
-        //frame.setLocation(x+2*w, y);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setUndecorated(false);
         frame.setFocusableWindowState(false);
-
         frame.add(new JLabel("test", SwingConstants.CENTER), BorderLayout.CENTER);
         frame.validate();
-
         frame.dispose();
         frame.setVisible(true);
 

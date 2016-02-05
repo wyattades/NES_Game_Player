@@ -1,6 +1,6 @@
 package Main;
 
-import Logic.Interpreter;
+import Logic.Control;
 
 /**
  * Directory: Main.NES_Game_Player/PACKAGE_NAME/
@@ -10,9 +10,9 @@ public class NES_Game_Player {
 
     public static void main(String[] args) {
 
-        Interpreter interpreter = new Interpreter();
+        Control control = new Control();
 
-        new Thread(interpreter).start();
+        new Thread(control).start();
 
     }
 

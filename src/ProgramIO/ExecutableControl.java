@@ -18,19 +18,20 @@ import java.io.IOException;
  */
 public class ExecutableControl {
 
-    public final static int w = 260, h = 250;
+    public final static int w = 262, h = 253;
     private final int NES_color_1 = new Color(63, 63, 0).getRGB();
     private final int NES_color_2 = new Color(127, 127, 0).getRGB();
-    private final String gameName = "supermario.nes";
+    private final String gameName;
     private final String exeName = "/NES/nes.exe";
 
     public int x, y;
     public Rectangle dimension;
     private Robot robot;
-    private BufferedImage screenShot;
     private Process process;
 
-    public ExecutableControl() {
+    public ExecutableControl(String fileName) {
+
+        gameName = fileName;
 
         //Initiate robot
         try {
@@ -90,10 +91,18 @@ public class ExecutableControl {
         NES_Game_Player.sleep(500);
 
         String[] chars = gameName.split("(?!^)");
-        for (String s: chars) {
-            char c = Character.toUpperCase(s.charAt(0));
-            robot.keyPress(c);
-            robot.keyRelease(c);
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i].charAt(0);
+            if (Character.isUpperCase(c)) {
+                robot.keyPress(KeyEvent.VK_SHIFT);
+                robot.keyPress(c);
+                robot.keyRelease(KeyEvent.VK_SHIFT);
+                robot.keyRelease(c);
+            } else {
+                c = Character.toUpperCase(c);
+                robot.keyPress(c);
+                robot.keyRelease(c);
+            }
         }
         robot.keyPress(KeyEvent.VK_ENTER);
         robot.keyRelease(KeyEvent.VK_ENTER);
@@ -113,8 +122,8 @@ public class ExecutableControl {
         for (int i = 0; i < screenShot.getWidth(); i++) {
             for (int j = 0; j < screenShot.getHeight(); j++) {
                 if (screenShot.getRGB(i, j) == NES_color_1 && screenShot.getRGB(i+1, j) == NES_color_2) {
-                    x = i - 4;
-                    y = j + 42;
+                    x = i - 7;
+                    y = j + 40;
                     foundWindow = true;
                     break outerLoop;
                 }
@@ -130,11 +139,7 @@ public class ExecutableControl {
 
     public int[] getArray(Rectangle dimension) {
 
-        //Use robot to create a bufferedImage from a screenShot
-        screenShot = robot.createScreenCapture(dimension);
-
-        //Convert the bufferedImage to int[]
-        return ((DataBufferInt) screenShot.getRaster().getDataBuffer() ).getData();
+        return ((DataBufferInt) robot.createScreenCapture(dimension).getRaster().getDataBuffer() ).getData();
 
     }
 

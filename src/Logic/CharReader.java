@@ -20,9 +20,8 @@ public class CharReader {
     private final int
             charSize = 8,
             charSheetWidth = 16,
-            charSheetHeight = 6,
             WHITE = -1;
-    private final static char[] chars = {
+    private final char[] chars = {
             ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';' , '<', '=', '>', '?',
             '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K' , 'L', 'M', 'N', 'O',
@@ -33,10 +32,7 @@ public class CharReader {
 
     private Map<Character,int[]> charArrays;
     private int[] gameArray;
-//    private int[][] charImageArray;
-    private int textColor;
-    //TEMP
-    public BufferedImage snapShotTest, charImageTest;
+    private int textColor; //Not needed yet
 
     public CharReader(Color textColor) {
 
@@ -50,59 +46,26 @@ public class CharReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        assert image != null;
 
+        int charImageWidth = image.getWidth(), charImageHeight = image.getHeight();
+        int[] charImageArray = image.getRGB(0,0,charImageWidth,charImageHeight,null,0,charImageWidth);
         charArrays = new HashMap<>();
-        int[] charImageArray = image.getRGB(0,0,image.getWidth(),image.getHeight(),null,0,image.getWidth());
         for (int i = 0; i < chars.length; i++) {
             int[] charArray = subArray(
                     charImageArray,
                     WHITE,
-                    ExecutableControl.w,
+                    charImageWidth,
                     (i%charSheetWidth)*charSize,
                     (i/charSheetWidth)*charSize,
                     charSize,
                     charSize
             );
-//            int[] charArray = new int[charSize*charSize];
-//            int startx = (i%charSheetWidth)*charSize;
-//            int starty = (i/charSheetWidth)*charSize;
-//            for (int j = 0; j < charSize*charSize; j++) {
-//                if (image.getRGB(startx + j%charSize, starty + j/charSize) == WHITE) {
-//                    charArray[j] = 1;
-//                }
-//            }
+
             charArrays.put(chars[i], charArray);
 
-            for (int j = 0; j < charArray.length; j+=charSize) {
-                System.out.println(Arrays.toString(Arrays.copyOfRange(charArray, j, j+charSize)));
-            }
-            System.out.println();
-
-
         }
 
-//        //Set a -1/0 array based on the char reference image
-//        charImageArray = new int[charSheetWidth*charSize][charSheetHeight*charSize];
-//        for (int i = 0; i < charSheetWidth*charSize; i++) {
-//            for (int j = 0; j < charSheetHeight*charSize; j++) {
-//                if (image.getRGB(i,j) == WHITE)
-//                    charImageArray[i][j] = WHITE;
-//            }
-//        }
-//
-//        printArray(charImageArray);
-
-    }
-
-    //TEMP
-    public static void printArray(int[][] a) {
-        System.out.println();
-        for (int i = 0; i < a.length; i++) {
-            for (int j = 0; j < a[0].length; j++) {
-                System.out.print(((a[i][j]==0)?" ":"#") + " ");
-            }
-            System.out.println();
-        }
     }
 
     public void setGameArray(int[] gameArray) {
@@ -111,70 +74,27 @@ public class CharReader {
 
     public char getChar(int x, int y) {
 
-        char c = 0;
+        int[] snapShotArray = subArray(gameArray,WHITE,ExecutableControl.w,x,y,charSize,charSize);
 
+        for (char c : charArrays.keySet()) {
+            if (Arrays.equals(charArrays.get(c), snapShotArray)) {
+                return c;
+            }
+        }
 
+//        System.out.println("Can't find a char at location: " + x + "," + y);
 
-//        int[][] snapShotArray = subArray(gameArray,x,y,charSize,charSize);
-//        int[][] charImageSubArray = subArray(charImageArray, 3 * charSize, 4 * charSize, charSize, charSize);
-
-  //      printArray(gameArray);
-//        System.exit(0);
-
-//        for (int i = 1, row = 0; i < chars.length-1; i++) {
-//            int col = i % charSheetWidth;
-//            if (Arrays.equals(
-//                    snapShotArray,
-//                    subArray(charImageArray, col * charSize, row * charSize, charSize, charSize))
-//                    ) {
-//                c = chars[i];
-//            }
-//
-//        }
-
-//        snapShotTest = new BufferedImage(charSize,charSize,BufferedImage.TYPE_INT_RGB);
-//        charImageTest = new BufferedImage(charSize,charSize,BufferedImage.TYPE_INT_RGB);
-
-//        for (int i = 0; i < charSize; i++) {
-//            for (int j = 0; j < charSize; j++) {
-//                if (snapShotArray[i][j] == WHITE) snapShotTest.setRGB(i,j,-1);
-//                //if (charImageSubArray[i][j] == WHITE) charImageTest.setRGB(i,j,-1);
-//            }
-//        }
-
-
-//        if (c == ' ') System.out.println("space");
-//        if (c == 0) System.out.println("Failed to locate matching char");
-
-        return c;
+        return 0;
     }
-
-    //Creates a two dimensional subArray in the given bounds,
-    //also sets all values in subArray to 0 or 1
-//    private int[][] subArray(int[][] fullArray, int x, int y, int w, int h) {
-//
-//        int[][] result = new int[w][];
-//
-//        for (int i = x, j = 0; i < x + w; i++, j++) {
-//            result[j] = Arrays.copyOfRange(fullArray[i], y, y + h);
-//
-//            //Set the array to only hold 0 and 1
-//            for (int k = 0; k < w; k++) {
-//               // if (result[j][k] != textColor) result[j][k] = 0;
-//            }
-//        }
-//
-//        return result;
-//    }
 
     private int[] subArray(int[] original, int checkColor, int p_w, int x, int y, int c_w, int c_h) {
 
         int[] result = new int[c_w*c_h];
 
         for (int i = 0; i < result.length; i++) {
-            int nx = x + i%c_w;
-            int ny = y + i/c_w;
-            if (original[nx + p_w * ny] == checkColor) {
+            int nx = x+(i%c_w);
+            int ny = y+(i/c_w);
+            if (original[nx + (p_w * ny)] == checkColor) {
                 result[i] = 1;
             }
         }
