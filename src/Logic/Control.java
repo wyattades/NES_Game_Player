@@ -69,23 +69,10 @@ public class Control implements Runnable {
 
             window.bufferStrategy.show();
 
-            //Print out the char at the given location
-//             for (int i = 0; i < exeControl.h-8; i++){
-//                for (int j = 0; j < exeControl.w-8; j ++) {
-//                    char c = charReader.getChar(j,i);
-//                    if (c != 0) {
-//                        System.out.println("CHAR: " + c + " at: "+i+","+j);
-//                    }
-//                }
-//            }
-//
             for (int i = 0; i < ExecutableControl.w; i++) {
                 System.out.print(charReader.getChar(i,16));
             }
             System.out.println();
-
-//
-//            System.exit(1);
 
         }
 
