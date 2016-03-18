@@ -69,6 +69,7 @@ public class Control implements Runnable {
 
             window.bufferStrategy.show();
 
+            char[] chars = new char[10];
             for (int i = 0; i < ExecutableControl.w; i++) {
                 System.out.print(charReader.getChar(i,16));
             }

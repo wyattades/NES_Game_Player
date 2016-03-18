@@ -14,7 +14,7 @@ public class Output {
 
     public ArrayList<CustomAction> actions;
 
-    public Output(Robot robot) {
+    public Output() {
 
         actions.add(new CustomAction("a", KeyEvent.VK_X));
         actions.add(new CustomAction("b", KeyEvent.VK_Z));
