@@ -1,4 +1,4 @@
-package Logic;
+package ProgramIO;
 
 import ProgramIO.ExecutableControl;
 
@@ -23,14 +23,14 @@ public class CharReader {
             WHITE = -1;
     private final char[] chars = {
             ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';' , '<', '=', '>', '?',
-            '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K' , 'L', 'M', 'N', 'O',
-            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[' , '\\', ']', '^', '_',
-            '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k' , 'l', 'm', 'n', 'o',
-            'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{' , '|', '}', '~', ' '
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?',
+            '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_',
+            '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+            'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', ' '
     };
 
-    private Map<Character,int[]> charArrays;
+    private Map<Character, int[]> charArrays;
     private int[] gameArray;
     private int textColor; //Not needed yet
 
@@ -49,15 +49,15 @@ public class CharReader {
         assert image != null;
 
         int charImageWidth = image.getWidth(), charImageHeight = image.getHeight();
-        int[] charImageArray = image.getRGB(0,0,charImageWidth,charImageHeight,null,0,charImageWidth);
+        int[] charImageArray = image.getRGB(0, 0, charImageWidth, charImageHeight, null, 0, charImageWidth);
         charArrays = new HashMap<>();
         for (int i = 0; i < chars.length; i++) {
             int[] charArray = subArray(
                     charImageArray,
                     WHITE,
                     charImageWidth,
-                    (i%charSheetWidth)*charSize,
-                    (i/charSheetWidth)*charSize,
+                    (i % charSheetWidth) * charSize,
+                    (i / charSheetWidth) * charSize,
                     charSize,
                     charSize
             );
@@ -74,7 +74,7 @@ public class CharReader {
 
     public char getChar(int x, int y) {
 
-        int[] snapShotArray = subArray(gameArray,WHITE,ExecutableControl.w,x,y,charSize,charSize);
+        int[] snapShotArray = subArray(gameArray, WHITE, ExecutableControl.w, x, y, charSize, charSize);
 
         for (char c : charArrays.keySet()) {
             if (Arrays.equals(charArrays.get(c), snapShotArray)) {
@@ -82,18 +82,49 @@ public class CharReader {
             }
         }
 
-//        System.out.println("Can't find a char at location: " + x + "," + y);
-
         return 0;
+    }
+
+
+    public int[] getScoreArray(int minCharDistance, int screenWidth) {
+        String[] parts = new String[5];
+        int pixelsBetween = 0;
+        int j = -1;
+        for (int i = 0; i < screenWidth; i++) {
+            char c = getChar(i, 16);
+            if (c == 0) {
+                pixelsBetween++;
+                if (pixelsBetween > minCharDistance) {
+                    j++;
+                    if (j < parts.length) parts[j] = "";
+                    pixelsBetween = -999;
+                }
+            } else {
+                pixelsBetween = 0;
+                parts[j] += c;
+            }
+        }
+
+        if (!parts[0].equals("")) {
+            int[] ints = new int[5];
+            for (int i = 0; i < parts.length; i++) {
+                if (!parts[i].equals("")) {
+                    ints[i] = Integer.parseInt(parts[i]);
+                }
+            }
+
+            return ints;
+        }
+        return null;
     }
 
     private int[] subArray(int[] original, int checkColor, int p_w, int x, int y, int c_w, int c_h) {
 
-        int[] result = new int[c_w*c_h];
+        int[] result = new int[c_w * c_h];
 
         for (int i = 0; i < result.length; i++) {
-            int nx = x+(i%c_w);
-            int ny = y+(i/c_w);
+            int nx = x + (i % c_w);
+            int ny = y + (i / c_w);
             if (original[nx + (p_w * ny)] == checkColor) {
                 result[i] = 1;
             }

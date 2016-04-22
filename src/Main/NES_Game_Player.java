@@ -1,7 +1,5 @@
 package Main;
 
-import Logic.Control;
-
 /**
  * Directory: Main.NES_Game_Player/PACKAGE_NAME/
  * Created by Wyatt on 7/18/2015.
@@ -27,7 +25,7 @@ public class NES_Game_Player {
     public static void sleep(int amount) {
         try {
             Thread.sleep(amount);
-        } catch(InterruptedException ex) {
+        } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
     }

@@ -2,16 +2,13 @@ package ProgramIO;
 
 import Main.NES_Game_Player;
 
-import javax.sound.sampled.Clip;
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by wyatt on 1/26/2016.
@@ -24,14 +21,16 @@ public class ExecutableControl {
     private final String gameName;
     private final String exeName = "/NES/nes.exe";
 
-    public int x, y;
     public Rectangle dimension;
     private Robot robot;
     private Process process;
+    public Output output;
 
     public ExecutableControl(String fileName) {
 
         gameName = fileName;
+
+        dimension = new Rectangle(0, 0, w, h);
 
         //Initiate robot
         try {
@@ -40,15 +39,21 @@ public class ExecutableControl {
             e.printStackTrace();
         }
 
+        output = new Output(robot);
+
         openExecutable();
         //Wait a bit for exe to fully open
         NES_Game_Player.sleep(500);
         openMarioGame();
         NES_Game_Player.sleep(500);
         locateWindow();
+        startGame();
 
-        dimension = new Rectangle(x,y,w,h);
+    }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     public void checkExeAvailable() {
@@ -56,6 +61,17 @@ public class ExecutableControl {
             System.out.println("The executable has closed or is no longer available.");
             System.exit(0);
         }
+
+        BufferedImage screenShot = robot.createScreenCapture(
+                new Rectangle((int) dimension.getX() + 7, (int) dimension.getY() - 40, 2, 1)
+        );
+        if (screenShot.getRGB(0, 0) != NES_color_1 || screenShot.getRGB(1, 0) != NES_color_2) {
+            locateWindow();
+        }
+    }
+
+    private void startGame() {
+        output.addActions(new ArrayList<int[]>(){{add(new int[]{Output.CA_START,1});}});
     }
 
     private void openExecutable() {
@@ -63,7 +79,7 @@ public class ExecutableControl {
         System.out.println("Opening executable: " + exeName);
 
         File file = new File(getClass().getResource(exeName).getPath());
-        if (! file.exists()) {
+        if (!file.exists()) {
             throw new IllegalArgumentException("The file " + exeName + " does not exist at that location.");
         }
         try {
@@ -108,11 +124,11 @@ public class ExecutableControl {
         robot.keyRelease(KeyEvent.VK_ENTER);
     }
 
-    private void locateWindow() {
+    public void locateWindow() {
         //Take a screenshot of the entire screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         BufferedImage screenShot = robot.createScreenCapture(
-                new Rectangle(0,0,(int)screenSize.getWidth(),(int)screenSize.getHeight())
+                new Rectangle(0, 0, (int) screenSize.getWidth(), (int) screenSize.getHeight())
         );
 
         boolean foundWindow = false;
@@ -121,9 +137,8 @@ public class ExecutableControl {
         outerLoop:
         for (int i = 0; i < screenShot.getWidth(); i++) {
             for (int j = 0; j < screenShot.getHeight(); j++) {
-                if (screenShot.getRGB(i, j) == NES_color_1 && screenShot.getRGB(i+1, j) == NES_color_2) {
-                    x = i - 7;
-                    y = j + 40;
+                if (screenShot.getRGB(i, j) == NES_color_1 && screenShot.getRGB(i + 1, j) == NES_color_2) {
+                    dimension.setLocation(i - 7, j + 40);
                     foundWindow = true;
                     break outerLoop;
                 }
@@ -139,7 +154,7 @@ public class ExecutableControl {
 
     public int[] getArray(Rectangle dimension) {
 
-        return ((DataBufferInt) robot.createScreenCapture(dimension).getRaster().getDataBuffer() ).getData();
+        return ((DataBufferInt) robot.createScreenCapture(dimension).getRaster().getDataBuffer()).getData();
 
     }
 

@@ -11,8 +11,8 @@ public class Window {
     public Window(int x, int y, int w, int h) {
 
         JFrame frame = new JFrame("Test");
-        frame.setLocation(x,y);
-        frame.setSize(w,h);
+        frame.setLocation(x, y);
+        frame.setSize(w, h);
 
 
         Canvas canvas = new Canvas();

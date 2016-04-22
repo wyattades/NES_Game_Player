@@ -13,8 +13,23 @@ import java.util.ArrayList;
 public class Output {
 
     public ArrayList<CustomAction> actions;
+    private Robot robot;
 
-    public Output() {
+    public static int
+            CA_A = 0,
+            CA_B = 1,
+            CA_UP = 2,
+            CA_DOWN = 3,
+            CA_LEFT = 4,
+            CA_RIGHT = 5,
+            CA_SELECT = 6,
+            CA_START = 7;
+
+    public Output(Robot robot) {
+
+        this.robot = robot;
+
+        actions = new ArrayList<>();
 
         actions.add(new CustomAction("a", KeyEvent.VK_X));
         actions.add(new CustomAction("b", KeyEvent.VK_Z));
@@ -27,22 +42,33 @@ public class Output {
 
     }
 
-//    public void update() {
-//
-//        for (CustomAction c : actions) {
-//            if (c.pressed && NES_Game_Player.currentTimeMillis() - c.time > c.currentDuration) {
-//                c.pressed = false;
-//                robot.keyRelease(c.keyEvent);
-//            }
-//        }
-//
-//    }
-//
-//    public void execute(int actionIndex, int duration) {
-//
-//        robot.keyRelease(actions.get(actionIndex).getKeyEvent(duration));
-//
-//    }
+    public void performActions() {
+
+        for (CustomAction c : actions) {
+            if (c.currentDuration > 0) {
+                if (c.pressed) {
+                    robot.keyPress(c.keyEvent);
+                    c.pressed = false;
+                    System.out.println(c.name + " , " + c.currentDuration);
+                }
+                c.currentDuration--;
+            } else if (c.currentDuration == 0) {
+                robot.keyRelease(c.keyEvent);
+            }
+        }
+
+    }
+
+    public void addActions(ArrayList<int[]> currentActions) {
+        for (int[] a : currentActions) {
+            if (a[0] >= actions.size()) {
+                System.out.println("Invalid action index: " + a[0]);
+                System.exit(1);
+            }
+
+            actions.get(a[0]).setDuration(a[1]);
+        }
+    }
 
     private class CustomAction {
 
@@ -60,19 +86,19 @@ public class Output {
 
             this.keyEvent = keyEvent;
 
-        }
-
-        public int getKeyEvent(int duration) {
-
-            currentDuration = duration;
-
-            time = NES_Game_Player.currentTimeMillis();
-
             pressed = true;
 
-            return keyEvent;
-
         }
+
+        public void setDuration(int d) {
+            currentDuration = d;
+//            pressed = true;
+//            time = NES_Game_Player.currentTimeMillis();
+        }
+
+//        public int getKeyEvent() {
+//            return keyEvent;
+//        }
 
     }
 

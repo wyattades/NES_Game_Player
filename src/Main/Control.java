@@ -1,10 +1,11 @@
-package Logic;
+package Main;
 
+import Logic.LearnBot;
+import ProgramIO.CharReader;
 import ProgramIO.ExecutableControl;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 /**
  * Directory: Main.NES_Game_Player/PACKAGE_NAME/
@@ -29,7 +30,7 @@ public class Control implements Runnable {
         exeControl = new ExecutableControl("SuperMario.nes");
 
         //Create a display window
-        window = new UserIO.Window(200,200,exeControl.w,exeControl.h);
+        window = new UserIO.Window(200, 200, exeControl.w, exeControl.h);
 
         charReader = new CharReader(Color.white);
 
@@ -43,10 +44,22 @@ public class Control implements Runnable {
 
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    private LearnBot learnBot;
+    private int gameState;
+    final int PLAY = 0, TRANSITION = 1;
+
     public void run() {
 
+        learnBot = new LearnBot();
+        gameState = PLAY;
+
         //Thread loop
-        while(running) {
+        while (running) {
 
             //Check if executable ever closes
             exeControl.checkExeAvailable();
@@ -69,11 +82,15 @@ public class Control implements Runnable {
 
             window.bufferStrategy.show();
 
-            char[] chars = new char[10];
-            for (int i = 0; i < ExecutableControl.w; i++) {
-                System.out.print(charReader.getChar(i,16));
+            int[] scores = charReader.getScoreArray(12, exeControl.w);
+            if (scores != null) {
+                learnBot.giveNewInput(scores, array);
+                learnBot.printData();
+                exeControl.output.addActions(learnBot.getCurrentActions());
+                exeControl.output.performActions();
+            } else {
+                System.out.println("scores = NULL");
             }
-            System.out.println();
 
         }
 
