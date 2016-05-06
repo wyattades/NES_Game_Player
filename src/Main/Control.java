@@ -50,15 +50,14 @@ public class Control implements Runnable {
     }
 
     private LearnBot learnBot;
+    private final int PLAY = 0, TRANSITION = 1;
     private int gameState;
-    final int PLAY = 0, TRANSITION = 1;
 
     public void run() {
 
         learnBot = new LearnBot();
         gameState = PLAY;
 
-        //Thread loop
         while (running) {
 
             //Check if executable ever closes

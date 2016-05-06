@@ -46,8 +46,9 @@ public class Output {
 
         for (CustomAction c : actions) {
             if (c.currentDuration > 0) {
+                robot.keyPress(c.keyEvent);
                 if (c.pressed) {
-                    robot.keyPress(c.keyEvent);
+
                     c.pressed = false;
                     System.out.println(c.name + " , " + c.currentDuration);
                 }

@@ -18,7 +18,7 @@ public class LearnBot {
     }
 
     void update() {
-        actions.add(new int[]{Output.CA_RIGHT, 100});
+        actions.add(new int[]{Output.CA_RIGHT, 5});
     }
 
     public ArrayList<int[]> getCurrentActions() {
